@@ -25,6 +25,6 @@ The directory where your input video is. Please wrap in quotes.
 ### Quality
 Two options for image quality: high (.png extension) and low (.jpg extension).
 ### FPS
-The target FPS you want to video to play in-game.
+The target FPS you want the video to play in-game.
 
 You can then drag the contents in the `output` folder into your resource pack.
