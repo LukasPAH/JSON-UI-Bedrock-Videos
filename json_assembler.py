@@ -1,7 +1,6 @@
 import os
 import json
 import glob
-from unicodedata import name
 
 
 def json_assembler(scene, fps):
@@ -54,7 +53,7 @@ def json_assembler(scene, fps):
         "image_template": {
             "type": "image",
             "alpha": 0,
-            "ignored": "(not ($actionbar_text = '{name}'))".format(name=namespace)
+            "ignored": "(not ($corrected_actionbar_text = '{name}'))".format(name=namespace)
         }
     }
 
@@ -63,6 +62,7 @@ def json_assembler(scene, fps):
         "{custom_panel}_content_panel".format(custom_panel=namespace): {
             "type": "panel",
             "layer": 1005,
+            "$corrected_actionbar_text": "$actionbar_text",
             "controls": []
         }
     }
@@ -128,8 +128,8 @@ def json_assembler(scene, fps):
         # Merge the image anims into the root.
         custom_root.update(animation)
 
-    # Define frame time (1.2 to prevent clipping of images).
-    frames = 1.2 * float(1 / fps)
+    # Define frame time (2.2 to prevent clipping of images).
+    frames = 2.2 * float(1 / fps)
 
     # Other common animations.
     alpha_in = {
