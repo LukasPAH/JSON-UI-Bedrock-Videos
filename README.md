@@ -30,3 +30,6 @@ Two options for image quality: high (.png extension) and low (.jpg extension).
 The target FPS you want the video to play in-game.
 
 You can then drag the contents in the `output` folder into your resource pack.
+
+## License
+As stated earlier, this script heavily utilizes [ffmpeg](https://www.ffmpeg.org/), which is licensed under [GPLv3](COPYING.GPLv3). The files were obtained as part of the "essentials" from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) and a mirror of the utilized version can be found [here](https://github.com/GyanD/codexffmpeg/releases/tag/2022-02-14-git-59c647bcf3)
