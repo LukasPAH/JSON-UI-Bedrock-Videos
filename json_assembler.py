@@ -69,7 +69,7 @@ def json_assembler(namespace, fps):
     working_directory = os.getcwd()
 
     # Change working directory.
-    os.chdir(f"./output/textures/namespace")
+    os.chdir(f"./output/textures/{namespace}")
 
     # Get images.
     images = glob.glob("./*.png")
