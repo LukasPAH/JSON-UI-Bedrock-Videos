@@ -1,5 +1,7 @@
 # JSON-UI-Bedrock-Videos
 
+This branch represents an attempt at implementing support for running via Ubuntu. Might end up with like 5000 commits lol
+
 ## What is this?
 This repo hosts a Python script to make videos in Minecraft Bedrock JSON UI. This is extremely experimental, and is very only likely to run on high end Windows hardware. It will
 crash Minecraft on a phone when run. Sorry not sorry.
