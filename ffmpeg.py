@@ -9,33 +9,23 @@ from json_assembler import json_assembler
 def run_command(fps, video_file, quality, output):
 
     # Save the current working directory to memory.
-    working_directory = os.getcwd()
+    dir = os.getcwd()
 
     # Change the working directory.
     os.chdir("./ffmpeg/bin")
 
     # Run ffmpeg, extracting individual frames.
-    # subprocess.call(
-    #     "ffmpeg.exe -ss 00:00 -i {video_file} -r {fps} \"{dir}\output\\textures\{output}\image-%06d.{quality}\"".format(video_file=video_file, fps=fps, dir=working_directory, output=output, quality=quality))
-    subprocess.call(
-        "ffmpeg -ss 00:00 -i \"{video_file}\" -r {fps} \"{dir}/output/textures/{output}/image-%06d.{quality}\"".format(video_file=video_file, fps=fps, dir=working_directory, output=output, quality=quality), shell=True)
+    subprocess.call(f"ffmpeg.exe -ss 00:00 -i \"{video_file} -r {fps} \"{dir}/output/textures/{output}/image-%06d.{quality}\"")
 
     # Get audio, first from video to m4a, then from m4a to ogg.
-    # subprocess.call("ffmpeg.exe -ss 00:00 -i {video_file} -vn -c:a copy \"{dir}\output\\sounds\{output}.m4a\"".format(
-    #     video_file=video_file, output=output, dir=working_directory))
-    subprocess.call("ffmpeg -ss 00:00 -i \"{video_file}\" -vn -c:a copy \"{dir}/output/sounds/{output}.m4a\"".format(
-        video_file=video_file, output=output, dir=working_directory), shell=True)
-    # subprocess.call(
-    #     "ffmpeg.exe -ss 00:00 -i \"{dir}\output\\sounds\{output}.m4a\" -acodec libvorbis -ag 4 -vn -ac 2 -map_metadata 0 \"{dir}\output\\sounds\{output}.ogg\"".format(output=output, dir=working_directory))
-    subprocess.call(
-        "ffmpeg -ss 00:00 -i \"{dir}/output/sounds/{output}.m4a\" -acodec libvorbis -ag 4 -vn -ac 2 -map_metadata 0 \"{dir}/output/sounds/{output}.ogg\"".format(output=output, dir=working_directory), shell=True)
+    subprocess.call(f"ffmpeg.exe -ss 00:00 -i \"{video_file}\" -vn -c:a copy \"{dir}/output/sounds/{output}.m4a\"")
+    subprocess.call(f"ffmpeg.exe -ss 00:00 -i \"{dir}/output/sounds/{output}.m4a\" -acodec libvorbis -ag 4 -vn -ac 2 -map_metadata 0 \"{dir}/output/sounds/{output}.ogg\"")
 
     # Remove temp file.
-    os.remove("{dir}/output/sounds/{output}.m4a".format(
-        output=output, dir=working_directory))
+    os.remove(f"{dir}/output/sounds/{output}.m4a")
 
     # Change the working directory to what it was previously.
-    os.chdir(working_directory)
+    os.chdir(dir)
 
     # Add the sound to the definitions.
     sound_defs = open("output/sounds/sound_definitions.json", "w")

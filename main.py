@@ -18,7 +18,7 @@ os.mkdir("output/textures")
 os.mkdir("output/sounds")
 
 # Create our custom content folder.
-os.mkdir("output/textures/{scene}".format(scene=scene))
+os.mkdir(f"output/textures/{scene}")
 
 # Run ffmpeg.
 ffmpeg(0, "", "L", 30, scene)
