@@ -3,7 +3,7 @@ import json
 import glob
 
 
-def json_assembler(scene, fps):
+def json_assembler(namespace, fps):
 
     # Create a UI folder for UI files.
     os.mkdir("output/ui")
@@ -18,7 +18,7 @@ def json_assembler(scene, fps):
                 {
                     "array_name": "controls",
                     "operation": "insert_front",
-                    "value": {"{custom_panel}_video_factory@{custom_panel}.{custom_panel}_video_factory".format(custom_panel=scene): {}}
+                    "value": {f"{namespace}_video_factory@{namespace}.{namespace}_video_factory": {}}
                 }
             ]
         }
@@ -38,28 +38,24 @@ def json_assembler(scene, fps):
     hud_screen.close()
 
     # Open custom namespace.
-    custom_file = open("output/ui/{namespace}.json".format(namespace=scene),
-                       "w")
-
-    # Define namespace.
-    namespace = scene
+    custom_file = open(f"output/ui/{namespace}.json", "w")
 
     # Define the root.
     custom_root = {
-        "namespace": "{namespace}".format(namespace=namespace)}
+        "namespace": namespace}
 
     # Define the image template.
     image_template = {
         "image_template": {
             "type": "image",
             "alpha": 0,
-            "ignored": "(not ($corrected_actionbar_text = '{name}'))".format(name=namespace)
+            "ignored": f"(not ($corrected_actionbar_text = '{namespace}'))"
         }
     }
 
     # Define the custom content panel.
     content_panel = {
-        "{custom_panel}_content_panel".format(custom_panel=namespace): {
+        f"{namespace}_content_panel": {
             "type": "panel",
             "layer": 1005,
             "$corrected_actionbar_text": "$actionbar_text",
@@ -73,8 +69,7 @@ def json_assembler(scene, fps):
     working_directory = os.getcwd()
 
     # Change working directory.
-    os.chdir(
-        "./output/textures/{custom_folder}".format(custom_folder=namespace))
+    os.chdir(f"./output/textures/{namespace}")
 
     # Get images.
     images = glob.glob("./*.png")
@@ -100,9 +95,9 @@ def json_assembler(scene, fps):
 
         # Define video frame.
         video_frame = {
-            "video_frame_{frame_number}@{namespace}.image_template".format(frame_number=items, namespace=namespace): {
-                "texture": "textures/{namespace}/{frame_number}".format(namespace=namespace, frame_number=items),
-                "anims": ["@{namespace}.{item}_anim".format(namespace=namespace, item=items)],
+            f"video_frame_{items}@{namespace}.image_template": {
+                "texture": f"textures/{namespace}/{items}",
+                "anims": [f"@{namespace}.{items}_anim"],
                 "layer": n
             }
         }
@@ -110,18 +105,17 @@ def json_assembler(scene, fps):
         n = n + 1
 
         # Add video frame to content panel.
-        content_panel["{custom_panel}_content_panel".format(
-            custom_panel=namespace)]["controls"].append(video_frame)
+        content_panel[f"{namespace}_content_panel"]["controls"].append(video_frame)
 
         # Add duration for waiting anims
         duration = float(1 / fps) + duration
 
         # Define animation for rendering frame.
         animation = {
-            "{item}_anim".format(item=items): {
+            f"{items}_anim": {
                 "anim_type": "wait",
                 "duration": duration,
-                "next": "@{namespace}.alpha_in".format(namespace=namespace)
+                "next": f"@{namespace}.alpha_in"
             }
         }
 
@@ -138,7 +132,7 @@ def json_assembler(scene, fps):
             "duration": 0,
             "from": 0,
             "to": 1,
-            "next": "@{namespace}.alpha_wait".format(namespace=namespace)
+            "next": f"@{namespace}.alpha_wait"
         }
     }
     custom_root.update(alpha_in)
@@ -147,7 +141,7 @@ def json_assembler(scene, fps):
         "alpha_wait": {
             "anim_type": "wait",
             "duration": frames,
-            "next": "@{namespace}.alpha_out".format(namespace=namespace)
+            "next": f"@{namespace}.alpha_out"
         }
     }
     custom_root.update(alpha_wait)
@@ -165,12 +159,12 @@ def json_assembler(scene, fps):
     # Add the factory.
 
     factory = {
-        "{name}_video_factory".format(name=namespace): {
+        f"{namespace}_video_factory": {
             "type": "panel",
             "factory": {
                 "name": "hud_actionbar_text_factory",
                 "control_ids": {
-                    "hud_actionbar_text": "{name}_content_panel@{name}.{name}_content_panel".format(name=namespace)
+                    "hud_actionbar_text": f"{namespace}_content_panel@{namespace}.{namespace}_content_panel"
                 }
             }
         },
@@ -185,15 +179,14 @@ def json_assembler(scene, fps):
             "type": "image",
             "texture": "textures/ui/Black",
             "layer": -5,
-            "anims": ["@{name}.black_in".format(name=namespace)],
+            "anims": [f"@{namespace}.black_in"],
             "alpha": 0
         }
     }
 
     # Merge the black bg with the root and the content panel.
     custom_root.update(black)
-    content_panel["{custom_panel}_content_panel".format(
-        custom_panel=namespace)]["controls"].append(black)
+    content_panel[f"{namespace}_content_panel"]["controls"].append(black)
 
     # Black bg anims.
     black_in = {
@@ -202,7 +195,7 @@ def json_assembler(scene, fps):
             "from": 0,
             "to": 1,
             "duration": 0,
-            "next": "@{name}.black_wait".format(name=namespace)
+            "next": f"@{namespace}.black_wait"
         }
     }
     custom_root.update(black_in)
@@ -212,7 +205,7 @@ def json_assembler(scene, fps):
         "black_wait": {
             "anim_type": "wait",
             "duration": duration,
-            "next": "@{name}.black_out".format(name=namespace)
+            "next": f"@{namespace}.black_out"
         }
     }
     custom_root.update(black_wait)
@@ -245,7 +238,7 @@ def json_assembler(scene, fps):
     ui_defs_root = {"ui_defs": []}
 
     # Merge our namespace into the defs file.
-    ui_defs_root["ui_defs"].append("ui/{name}.json".format(name=namespace))
+    ui_defs_root["ui_defs"].append(f"ui/{namespace}.json")
 
     # Write the defs file.
     ui_defs.write(json.dumps(ui_defs_root))
