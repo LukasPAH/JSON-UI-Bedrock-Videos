@@ -71,8 +71,8 @@ def json_assembler(namespace, fps):
     os.chdir(f"./output/textures/{namespace}")
 
     # Get images.
-    images = glob.glob("./*.png")
-    jpgs = glob.glob("./*.jpg")
+    images = glob.glob("*.png")
+    jpgs = glob.glob("*.jpg")
     images.extend(jpgs)
 
     # Revert working directory.
@@ -220,6 +220,7 @@ def json_assembler(namespace, fps):
     custom_root.update(black_out)
 
     # Merge into the root.
+    custom_root.update(image_template)
     custom_root.update(content_panel)
 
     # Write the custom file.
