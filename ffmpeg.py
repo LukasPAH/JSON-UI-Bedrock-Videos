@@ -1,46 +1,36 @@
 import os
 import subprocess
+import platform
 import json
 from json_assembler import json_assembler
 
 # Run the ffmpeg command.
-
-
 def run_command(fps, video_file, quality, output):
-
-    # Save the current working directory to memory.
-    working_directory = os.getcwd()
-
-    # Change the working directory.
-    os.chdir("./ffmpeg/bin")
+    system = platform.system()
+    if system == "Windows": system = "ffmpeg.exe"
+    elif system == "Linux": system = "ffmpeg"
+    else: return print("Sorry, this OS is not currently supported")
 
     # Run ffmpeg, extracting individual frames.
-    subprocess.call(
-        "ffmpeg.exe -ss 00:00 -i {video_file} -r {fps} \"{dir}\output\\textures\{output}\image-%06d.{quality}\"".format(video_file=video_file, fps=fps, dir=working_directory, output=output, quality=quality))
+    subprocess.call(f"{system} -ss 00:00 -i \"{video_file}\" -r {fps} \"output/textures/{output}/image-%06d.{quality}\"", shell=True)
 
     # Get audio, first from video to m4a, then from m4a to ogg.
-    subprocess.call("ffmpeg.exe -ss 00:00 -i {video_file} -vn -c:a copy \"{dir}\output\\sounds\{output}.m4a\"".format(
-        video_file=video_file, output=output, dir=working_directory))
-    subprocess.call(
-        "ffmpeg.exe -ss 00:00 -i \"{dir}\output\\sounds\{output}.m4a\" -acodec libvorbis -ag 4 -vn -ac 2 -map_metadata 0 \"{dir}\output\\sounds\{output}.ogg\"".format(output=output, dir=working_directory))
+    subprocess.call(f"{system} -ss 00:00 -i \"{video_file}\" -vn -c:a copy \"output/sounds/{output}.m4a\"", shell=True)
+    subprocess.call(f"{system} -ss 00:00 -i \"output/sounds/{output}.m4a\" -acodec libvorbis -ag 4 -vn -ac 2 -map_metadata 0 \"output/sounds/{output}.ogg\"", shell=True)
 
     # Remove temp file.
-    os.remove("{dir}\output\\sounds\{output}.m4a".format(
-        output=output, dir=working_directory))
-
-    # Change the working directory to what it was previously.
-    os.chdir(working_directory)
+    os.remove(f"output/sounds/{output}.m4a")
 
     # Add the sound to the definitions.
     sound_defs = open("output/sounds/sound_definitions.json", "w")
     sound_root = {
         "format_version": "1.14.0",
         "sound_definitions": {
-            "{name}:{name}.play".format(name=output): {
+            f"{output}:{output}.play": {
                 "category": "neutral",
                 "sounds": [
                     {
-                        "name": "sounds/{name}".format(name=output),
+                        "name": f"sounds/{output}",
                         "is3D": False,
                         "volume": 1
                     }
@@ -57,8 +47,6 @@ def run_command(fps, video_file, quality, output):
 
 
 # Call ffmpeg.
-
-
 def ffmpeg(state, file, qual, frames, output_dir):
     # Define starting state and values.
     n = state
@@ -76,8 +64,7 @@ def ffmpeg(state, file, qual, frames, output_dir):
 
     if n == 1:
         # User CLI input for quality options high=.png, low=.jpeg
-        quality = str(
-            input("Video Quality (valid options: 'H' or 'L' (high or low)): "))
+        quality = str(input("Video Quality (valid options: 'H' or 'L' (high or low)): "))
 
         # If this is an error, return to top and try again.
         if quality.lower() != "h" and quality.lower() != "l":
@@ -86,13 +73,12 @@ def ffmpeg(state, file, qual, frames, output_dir):
 
         if quality.lower() == "h" or quality.lower() == "l":
             # Match the case and convert to respective file types.
-            match quality:
+            match quality.lower():
                 case "h":
                     quality = "png"
                 case "l":
                     quality = "jpg"
 
-            # Increment state.
             n = 2
 
     if n == 2:
@@ -103,8 +89,6 @@ def ffmpeg(state, file, qual, frames, output_dir):
         except:
             print("Error: FPS requires int or float!")
             ffmpeg(2, video_file, quality, "30", output)
-
-        # Increment state.
 
     # Finally, run the ffmpeg commands with the fields above.
     if n == 3:
