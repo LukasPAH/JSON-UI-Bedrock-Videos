@@ -6,18 +6,12 @@ scene = str(input("Scene Name: "))
 
 # Nuke the output directory, if it exists.
 if os.path.exists("output"):
-    shutil.rmtree("output")
+	shutil.rmtree("output")
 
-# Re-create output folder.
+# Re-create folders.
 os.mkdir("output")
-
-# Create a texture folder.
 os.mkdir("output/textures")
-
-# Create a sounds folder.
 os.mkdir("output/sounds")
-
-# Create our custom content folder.
 os.mkdir(f"output/textures/{scene}")
 
 # Run ffmpeg.

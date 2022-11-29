@@ -2,9 +2,7 @@ import os
 import json
 import glob
 
-
 def json_assembler(namespace, fps):
-
     # Create a UI folder for UI files.
     os.mkdir("output/ui")
 
@@ -42,7 +40,8 @@ def json_assembler(namespace, fps):
 
     # Define the root.
     custom_root = {
-        "namespace": namespace}
+        "namespace": namespace
+    }
 
     # Define the image template.
     image_template = {
@@ -88,7 +87,7 @@ def json_assembler(namespace, fps):
     # Iterate through list and add to content panel.
     for items in images:
 
-        # Chop of the unneeded file extension from the item.
+        # Chop off the unneeded file extension from the item.
         items = items.replace(".\\", "")
         items = items.replace(".png", "")
         items = items.replace(".jpg", "")
@@ -157,7 +156,6 @@ def json_assembler(namespace, fps):
     custom_root.update(alpha_out)
 
     # Add the factory.
-
     factory = {
         f"{namespace}_video_factory": {
             "type": "panel",
@@ -221,10 +219,7 @@ def json_assembler(namespace, fps):
     }
     custom_root.update(black_out)
 
-    # Merge the image template into the root.
-    custom_root.update(image_template)
-
-    # Merge the content panel into the root.
+    # Merge into the root.
     custom_root.update(content_panel)
 
     # Write the custom file.

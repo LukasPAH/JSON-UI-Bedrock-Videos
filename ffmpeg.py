@@ -5,7 +5,6 @@ import json
 from json_assembler import json_assembler
 
 # Run the ffmpeg command.
-
 def run_command(fps, video_file, quality, output):
     system = platform.system()
     if system == "Windows": system = "ffmpeg.exe"
@@ -48,8 +47,6 @@ def run_command(fps, video_file, quality, output):
 
 
 # Call ffmpeg.
-
-
 def ffmpeg(state, file, qual, frames, output_dir):
     # Define starting state and values.
     n = state
@@ -67,8 +64,7 @@ def ffmpeg(state, file, qual, frames, output_dir):
 
     if n == 1:
         # User CLI input for quality options high=.png, low=.jpeg
-        quality = str(
-            input("Video Quality (valid options: 'H' or 'L' (high or low)): "))
+        quality = str(input("Video Quality (valid options: 'H' or 'L' (high or low)): "))
 
         # If this is an error, return to top and try again.
         if quality.lower() != "h" and quality.lower() != "l":
@@ -83,7 +79,6 @@ def ffmpeg(state, file, qual, frames, output_dir):
                 case "l":
                     quality = "jpg"
 
-            # Increment state.
             n = 2
 
     if n == 2:
@@ -94,8 +89,6 @@ def ffmpeg(state, file, qual, frames, output_dir):
         except:
             print("Error: FPS requires int or float!")
             ffmpeg(2, video_file, quality, "30", output)
-
-        # Increment state.
 
     # Finally, run the ffmpeg commands with the fields above.
     if n == 3:
